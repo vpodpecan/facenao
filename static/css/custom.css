@@ -1,0 +1,95 @@
+body {
+  /*padding-top: 50px;*/
+  margin: 10px 20px 0px 20px;
+
+}
+
+#maintitle {
+    font-size: 60px;
+}
+
+.hr2 {
+    border: 0 !important;
+    height: 1px !important;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0)) !important;
+}
+
+.centertext {
+  text-align: center;
+}
+
+/*.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+.margin {
+    margin:10px;
+}*/
+
+#naosnapshot{
+    min-height: 420px;
+}
+
+#naosnapshot img {
+    margin-top: 5px;
+    padding: 5px;
+    border: 1px solid lightgray;
+}
+
+#faces figure {
+    display: inline-block;
+    vertical-align: top;
+}
+
+
+#faces img {
+    margin: 10px;
+    padding: 5px;
+    border: 1px solid lightgray;
+    /*vertical-align: top;*/
+    /*display: inline-block;*/
+}
+
+#faces {
+    max-height: 500px;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+#hoftitle {
+    margin-top: 20px;
+}
+
+#hof img {
+    /*height: 150px;*/
+    max-width: 120px;
+}
+
+.imgtitle {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+
+#infotext p {
+    font-size: 40px;
+    text-align: left;
+    color: lightgray;
+    font-style: italic;
+    margin-top: 100px;
+}
+
+/* bootstrap */
+.btn-xlarge {
+    padding: 18px 28px;
+    font-size: 22px; //change this to your desired size
+    line-height: normal;
+    -webkit-border-radius: 8px;
+       -moz-border-radius: 8px;
+            border-radius: 8px;
+}
+
+.glyphicon.glyphicon-camera {
+    font-size: 75px;
+}

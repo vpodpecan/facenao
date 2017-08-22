@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- The above 2 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="Web application connecting NAO robot and face emotion service">
+    <meta name="author" content="Vid Podpecan">
+
+    <!-- <link rel="icon" href="../../favicon.ico"> -->
+
+    <title>Facenao</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <script src="http://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <!-- <script src="https://cdn.rawgit.com/oliver-moran/jimp/master/browser/lib/jimp.min.js"></script> -->
+
+    <script src="../static/js/jimp.min.js"></script>
+    <!-- <script src="../static/js/kairos.js"></script> -->
+
+    <script src="../static/js/spin.min.js"></script>
+    <!-- <script src="../static/js/jquery.spin.js"></script> -->
+
+    <script src="../static/js/vex.combined.min.js"></script>
+    <script>
+        vex.defaultOptions.className = 'vex-theme-os'
+    </script>
+    <link rel="stylesheet" href="../static/css/vex.css" />
+    <link rel="stylesheet" href="../static/css/vex-theme-os.css" />
+
+    <link href="../static/css/custom.css" rel="stylesheet">
+    <script src="../static/js/main.js"></script>
+
+    <script type="text/javascript">
+
+        // Emotion API keys
+        % include('templates/api-keys.js')
+
+    </script>
+
+</head>
+
+<body>
+
+    <div class="container-responsive">
+        <div class="row">
+            <div class="col-md-2">
+                <button id="setupbtn" type="button" class="btn btn-default btn-xs">
+                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                </button>
+
+                <button id="takepicbtn" type="button" class="btn btn-primary btn-xlarge">
+                    <span class="glyphicon glyphicon-camera" aria-hidden="true"></span>
+                    </br>take picture!
+                </button>
+            </div>
+
+            <div class="col-md-10">
+                <div class="centertext">
+                    <h1 id="maintitle">Facenao</h1>
+                    <p class="lead">
+                        A humanoid interface to emotion recognition
+                    </p>
+                </div>
+                <hr class="hr2" />
+            </div>
+
+        </div>
+
+
+        <div class="row">
+
+            <div class="col-md-5">
+                <div id="naosnapshot">
+                </div>
+            </div>
+
+            <div class="col-md-7" centertext>
+                <div id="faces" class='centertext'>
+                    <div id="infotext">
+                        <p>
+                            Press SPACE or ENTER or click button!
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row" id="hoftitle">
+            <div class="col-md-12 centertext">
+                <div>
+                    <h1>Hall of fame</h1>
+                    <hr class="hr2" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row" id="hof">
+
+            <div class="col-md-2" id="anger">
+            </div>
+
+            <div class="col-md-1 centertext" id="anger">
+                <div class="imgtitle">Anger</div>
+                <figure>
+                    <img src="">
+                    <figcaption></figcaption>
+                </figure>
+            </div>
+
+
+            <div class="col-md-1 centertext" id="contempt">
+                <div class="imgtitle">Contempt</div>
+                <figure>
+                    <img src="">
+                    <figcaption></figcaption>
+                </figure>
+            </div>
+
+            <div class="col-md-1 centertext" id="disgust">
+                <div class="imgtitle">Disgust</div>
+                <figure>
+                    <img src="">
+                    <figcaption></figcaption>
+                </figure>
+            </div>
+
+            <div class="col-md-1 centertext" id="fear">
+                <div class="imgtitle">Fear</div>
+                <figure>
+                    <img src="">
+                    <figcaption></figcaption>
+                </figure>
+            </div>
+
+            <div class="col-md-1 centertext" id="happiness">
+                <div class="imgtitle">Happiness</div>
+                <figure>
+                    <img src="">
+                    <figcaption></figcaption>
+                </figure>
+            </div>
+
+            <div class="col-md-1 centertext" id="neutral">
+                <div class="imgtitle">Neutral</div>
+                <figure>
+                    <img src="">
+                    <figcaption></figcaption>
+                </figure>
+            </div>
+
+            <div class="col-md-1 centertext" id="sadness">
+                <div class="imgtitle">Sadness</div>
+                <figure>
+                    <img src="">
+                    <figcaption></figcaption>
+                </figure>
+            </div>
+
+            <div class="col-md-1 centertext" id="surprise">
+                <div class="imgtitle">Surprise</div>
+                <figure>
+                    <img src="">
+                    <figcaption></figcaption>
+                </figure>
+            </div>
+
+            <div class="col-md-2">
+            </div>
+
+        </div>
+
+    </div>
+    <!-- /container -->
+
+</body>
+
+</html>
