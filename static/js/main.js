@@ -318,6 +318,8 @@ $(document).ready(function() {
                     var imgWidth = 1280;
                     var imgHeight = 960;
 
+                    $('#clicksound')[0].play();
+
                     saveCameraImage(imgbasename, imgBase64, imgWidth, imgHeight, function(imurl) {
                         // imurl = 'https://upload.wikimedia.org/wikipedia/commons/8/87/Basankusu_-_typical_fired_brick_house.jpg'
                         // imurl = 'https://upload.wikimedia.org/wikipedia/commons/d/df/Baby_Mother_Grandmother_and_Great_Grandmother.jpg'
