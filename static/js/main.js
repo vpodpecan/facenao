@@ -313,12 +313,11 @@ $(document).ready(function() {
                 //     console.log('parameter changed!');
                 // })
 
+                $('#clicksound')[0].play();
                 jsnao.al_video.getImageRemote(jsnao.sname).fail(jsnao.error).done(function(data) {
                     var imgBase64 = data[6];
                     var imgWidth = 1280;
                     var imgHeight = 960;
-
-                    $('#clicksound')[0].play();
 
                     saveCameraImage(imgbasename, imgBase64, imgWidth, imgHeight, function(imurl) {
                         // imurl = 'https://upload.wikimedia.org/wikipedia/commons/8/87/Basankusu_-_typical_fired_brick_house.jpg'
