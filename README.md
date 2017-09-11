@@ -17,7 +17,7 @@ A NAO robot version v4 or v5 running NAOqi OS version 2.x is required. It should
 
 ### Software
 
-The server side requires Python 3.5+, `bottle`, `paste` and `Pillow`. See `requirements.txt` for details.
+The server side requires Python 3.4+, `bottle`, `paste` and `Pillow`. See `requirements.txt` for details.
 
 The client side requires Bootstrap 3 and a number of Javascript libraries (jimp, vex, spin.js, jquery, ...). They are either included or linked in the code so you do not have to install anything.
 
