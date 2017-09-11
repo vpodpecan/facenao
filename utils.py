@@ -1,4 +1,8 @@
-from os import scandir
+try:
+    from os import scandir
+except ImportError:
+    from scandir import scandir
+# from os import scandir
 from os.path import splitext
 import pickle
 
