@@ -325,7 +325,6 @@ $(document).ready(function() {
                         Jimp.read(imurl).then(function(image) {
                             var displayImage = image.clone();
                             displayImage.scaleToFit(1200, 500);
-                            // displayImage.scaleToFit(120, 40);
 
                             if(image.bitmap.width > 1920 || image.bitmap.height > 1200) {
                                 image.scaleToFit(1920, 1200);
@@ -345,20 +344,15 @@ $(document).ready(function() {
                                         // console.log(facedata.faceimages);
                                     });
 
-                                    // console.log(data);
-                                    var sortedEmos = new Array;
                                     for (var i = 0; i < data.length; i++) {
                                         var face = data[i].faceRectangle;
                                         var emos = data[i].scores;
-                                        // console.log(data[i]);
                                         var faceimg = image.clone();
                                         faceimg.crop(face.left, face.top, face.width, face.height);
                                         faceimg.scaleToFit(200, 200);
-                                        // faceimg.scaleToFit(15, 15);
-
-                                        // console.log(emos);
 
                                         // sort descending
+                                        var sortedEmos = new Array;
                                         for (var sc in emos) {
                                             if (emos.hasOwnProperty(sc)) {
                                                 sortedEmos.push([sc, emos[sc]]);
@@ -369,14 +363,14 @@ $(document).ready(function() {
                                         })
 
                                         var caption = '';
-                                        for (var i=0; i<sortedEmos.length; i++) {
-                                            var val = Math.round(sortedEmos[i][1] * 1000) / 10;
+                                        for (var j=0; j<sortedEmos.length; j++) {
+                                            var val = Math.round(sortedEmos[j][1] * 1000) / 10;
                                             if (val > 0) {
-                                                if (i==0) {
-                                                    caption += '<strong>' + sortedEmos[i][0] + ': ' + val.toString() + '%' + '</strong>' + '</br>'
+                                                if (j==0) {
+                                                    caption += '<strong>' + sortedEmos[j][0] + ': ' + val.toString() + '%' + '</strong>' + '</br>'
                                                 }
                                                 else {
-                                                    caption += sortedEmos[i][0] + ': ' + val.toString() + '%' + '</br>'
+                                                    caption += sortedEmos[j][0] + ': ' + val.toString() + '%' + '</br>'
                                                 }
                                             }
                                         }
@@ -387,7 +381,7 @@ $(document).ready(function() {
                                         });
                                     }
 
-                                    if (sortedEmos.length > 0) {
+                                    if (data.length > 0) {
                                         var naotext = 'I see ';
                                         if (data.length == 1) {
                                             naotext += 'one person.'
