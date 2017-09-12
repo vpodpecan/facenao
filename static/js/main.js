@@ -299,8 +299,13 @@ $(document).ready(function() {
             // var imgbasename = Math.random().toString().replace('.', '')
 
             var subscribename = "test" + Math.random().toString();
-            jsnao.al_video.subscribeCamera(subscribename, 0, 3, 11, 30).fail(jsnao.error).done(function(sname) {
+            jsnao.al_video.subscribeCamera(subscribename, 0, 2, 11, 30).fail(jsnao.error).done(function(sname) {
                 jsnao.sname = sname;
+
+
+                // 7: 80x60
+                // 2: 640x480
+
 
                 // // auto exposure
                 // jsnao.al_video.setCameraParameter(jsnao.sname, 22, 3).done(function(data){
@@ -314,10 +319,14 @@ $(document).ready(function() {
                 // })
 
                 $('#clicksound')[0].play();
+                console.log('>>' + jsnao.sname);
                 jsnao.al_video.getImageRemote(jsnao.sname).fail(jsnao.error).done(function(data) {
                     var imgBase64 = data[6];
-                    var imgWidth = 1280;
-                    var imgHeight = 960;
+                    // var imgWidth = 1280;
+                    // var imgHeight = 960;
+
+                    var imgHeight = 480;
+                    var imgWidth = 640;
 
                     saveCameraImage(imgbasename, imgBase64, imgWidth, imgHeight, function(imurl) {
                         // imurl = 'https://upload.wikimedia.org/wikipedia/commons/8/87/Basankusu_-_typical_fired_brick_house.jpg'
@@ -325,6 +334,9 @@ $(document).ready(function() {
                         Jimp.read(imurl).then(function(image) {
                             var displayImage = image.clone();
                             displayImage.scaleToFit(1200, 500);
+
+
+                            image.scaleToFit(640,480);
 
                             if(image.bitmap.width > 1920 || image.bitmap.height > 1200) {
                                 image.scaleToFit(1920, 1200);
