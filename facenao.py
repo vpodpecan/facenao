@@ -1,3 +1,6 @@
+"""
+@author: vid.podpecan@ijs.si
+"""
 import bottle
 from bottle import route, template, static_file, run, request, post, get, default_app, debug, redirect
 from PIL import Image

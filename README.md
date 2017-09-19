@@ -17,7 +17,7 @@ A NAO robot version v4 or v5 running NAOqi OS version 2.x is required. It should
 
 ### Software
 
-The server side requires Python 3.4+, `bottle`, `paste` and `Pillow`. See `requirements.txt` for details.
+The server side requires Python 3.4+, `bottle`, `paste` and `Pillow`. `imageio` is an optional requirement if you want to create animated GIFs from face images. See `requirements.txt` for details.
 
 The client side requires Bootstrap 3 and a number of Javascript libraries (jimp, vex, spin.js, jquery, ...). They are either included or linked in the code so you do not have to install anything.
 
@@ -30,6 +30,17 @@ Please see [here](https://debian-administration.org/article/386/Running_network_
 ```bash
 authbind --depth 2 python3 facenao.py --port=80
 ```
+
+### Bonus
+
+The `make_animations.py` script can create animated GIFs from face images. For example:
+
+```bash
+python3 make_animations.py -m 50 -d 0.5 -w -o asc
+```
+
+will create animated GIFs for all emotions and all scores >= 50 with 0.5 second frame duration in ascending order and print the score under the images. Enjoy :)
+
 
 ### Other
 
