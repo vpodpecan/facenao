@@ -1,6 +1,0 @@
-var key_1 = "ec48045cc8a5473991038150a0561f91";
-var key_2 = "8ad29851dd1a4fe6a60ad5ce06984361";
-
-
-// var key_1 = "a12a957ebd8e4c3086439008672cf320";
-// var key_2 = "d9d7433279534e698b07cd04ad59453b";
