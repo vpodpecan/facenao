@@ -296,30 +296,15 @@ $(document).ready(function() {
 
 
             var imgbasename = new Date().toISOString();
-            // var imgbasename = Math.random().toString().replace('.', '')
-
             var subscribename = "test" + Math.random().toString();
             jsnao.al_video.subscribeCamera(subscribename, 0, 2, 11, 30).fail(jsnao.error).done(function(sname) {
                 jsnao.sname = sname;
 
-
                 // 7: 80x60
                 // 2: 640x480
-
-
-                // // auto exposure
-                // jsnao.al_video.setCameraParameter(jsnao.sname, 22, 3).done(function(data){
-                //     console.log(data);
-                //     console.log('parameter changed!');
-                // })
-                // // auto white balance
-                // jsnao.al_video.setCameraParameter(jsnao.sname, 12, 0).done(function(data){
-                //     console.log(data);
-                //     console.log('parameter changed!');
-                // })
+                // 3: 1280x960
 
                 $('#clicksound')[0].play();
-                console.log('>>' + jsnao.sname);
                 jsnao.al_video.getImageRemote(jsnao.sname).fail(jsnao.error).done(function(data) {
                     var imgBase64 = data[6];
                     // var imgWidth = 1280;
@@ -329,8 +314,6 @@ $(document).ready(function() {
                     var imgWidth = 640;
 
                     saveCameraImage(imgbasename, imgBase64, imgWidth, imgHeight, function(imurl) {
-                        // imurl = 'https://upload.wikimedia.org/wikipedia/commons/8/87/Basankusu_-_typical_fired_brick_house.jpg'
-                        // imurl = 'https://upload.wikimedia.org/wikipedia/commons/d/df/Baby_Mother_Grandmother_and_Great_Grandmother.jpg'
                         Jimp.read(imurl).then(function(image) {
                             var displayImage = image.clone();
                             displayImage.scaleToFit(1200, 500);
