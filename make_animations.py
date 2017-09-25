@@ -75,10 +75,10 @@ def makeMovie(scores, scoreLimit=50, frameDuration=0.75, printScore=True):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-d', '--duration', type=float, help='GIF image frame duration')
-    parser.add_argument('-m', '--minscore', type=int, choices=range(1, 100), help='lower limit for face emotion score')
-    parser.add_argument('-o', '--order', type=str, choices=['asc', 'desc'], help='order (ascending or descending')
-    parser.add_argument('-w', '--writescore', action='store_true', help='order (ascending or descending')
+    parser.add_argument('-d', '--duration', type=float, default=1, help='GIF image frame duration')
+    parser.add_argument('-m', '--minscore', type=int, default=50, choices=range(1, 100), help='lower limit for face emotion score')
+    parser.add_argument('-o', '--order', type=str, default='asc', choices=['asc', 'desc'], help='order (ascending or descending')
+    parser.add_argument('-w', '--writescore', action='store_true', help='write score under image')
 
     args = parser.parse_args()
 
