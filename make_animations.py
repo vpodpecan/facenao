@@ -15,7 +15,20 @@ from utils import EMOTIONS
 
 def writeScore(imfile, score, printScore=True):
     im = Image.open(imfile)
-    im.thumbnail((200, 200), resample=Image.BICUBIC)
+    baseW = 200
+    baseH = 300
+    bwh = float(baseW)/baseH
+
+    wh = float(im.width) / im.height
+    if wh > bwh:
+        p = baseH/float(im.height)
+        im = im.resize((int(im.width*p), int(im.height*p)), resample=Image.LANCZOS)
+    elif wh < bwh:
+        p = baseW/float(im.width)
+        im = im.resize((int(im.width*p), int(im.height*p)), resample=Image.LANCZOS)
+    else:  # same ratio, different size
+        im = im.resize((baseW, baseH), resample=Image.LANCZOS)
+
     outfile = tempfile.NamedTemporaryFile(suffix='.png')
 
     if printScore:
