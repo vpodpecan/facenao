@@ -333,6 +333,7 @@ $(document).ready(function() {
 
                                 var imgblob = b64toBlob(src);
                                 faceEmotionAPI(imgblob, function(data) {
+                                    // console.log(data);
                                     spinner.stop();
                                     $('#faces').empty();
                                     saveEmotionData(imgbasename, data, function(facedata){
@@ -341,7 +342,7 @@ $(document).ready(function() {
 
                                     for (var i = 0; i < data.length; i++) {
                                         var face = data[i].faceRectangle;
-                                        var emos = data[i].scores;
+                                        var emos = data[i].faceAttributes.emotion;
                                         var faceimg = image.clone();
                                         faceimg.crop(face.left, face.top, face.width, face.height);
                                         faceimg.scaleToFit(200, 200);
@@ -357,7 +358,9 @@ $(document).ready(function() {
                                             return b[1] - a[1];
                                         })
 
-                                        var caption = '';
+
+                                        var caption = '<strong>'+  data[i].faceAttributes.gender + ', ' + Math.round(data[i].faceAttributes.age) + ' years' + '</strong></br>';
+                                        // var caption = '';
                                         for (var j=0; j<sortedEmos.length; j++) {
                                             var val = Math.round(sortedEmos[j][1] * 1000) / 10;
                                             if (val > 0) {
@@ -397,6 +400,7 @@ $(document).ready(function() {
                                     spinner.stop();
                                     $('button').removeAttr("disabled");
                                     writeText('Error while calling face emotion service: ' + err);
+                                    console.log(err);
                                 })
                             });
                             // console.log(results);
@@ -414,13 +418,21 @@ $(document).ready(function() {
     })
 
     function faceEmotionAPI(imgblob, okcallback, errcallback) {
+        var params = {
+                   "returnFaceId": "true",
+                   "returnFaceLandmarks": "false",
+                   "returnFaceAttributes": "age,gender,emotion"
+               };
         $.ajax({
                 //  var params = {};
                 // NOTE: You must use the same location in your REST call as you used to obtain your subscription keys.
                 //   For example, if you obtained your subscription keys from westcentralus, replace "westus" in the
                 //   URL below with "westcentralus".
                 //  url: "https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize?" + $.param(params),
-                url: "https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize?",
+
+                // url: "https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize?",  THIS IS OLD EMOTION API
+                url: "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect" + "?" + $.param(params),
+
                 beforeSend: function(xhrObj) {
                     // Request headers
                     //  xhrObj.setRequestHeader("Content-Type","application/json");

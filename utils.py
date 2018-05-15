@@ -25,7 +25,8 @@ def findMaxEmotions(dirname):
                 d = pickle.load(fp)
                 for emotion in EMOTIONS:
                     for facedata in d['apiresult']:
-                        current_emotion = facedata['scores'][emotion]
+                        #current_emotion = facedata['scores'][emotion]
+                        current_emotion = facedata['faceAttributes']['emotion'][emotion]
                         if max_emotions[emotion]['score'] is None or max_emotions[emotion]['score'] < current_emotion:
                             max_emotions[emotion]['score'] = current_emotion
                             max_emotions[emotion]['image'] = facedata['facefile']
