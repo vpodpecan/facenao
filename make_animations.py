@@ -61,7 +61,7 @@ def collectScores(reverseOrder=False):
                 emodata = pickle.load(emofile)
                 apidata = emodata['apiresult']
                 for facedata in apidata:
-                    scores = facedata['scores']
+                    scores = facedata['faceAttributes']['emotion']
                     facefile = facedata['facefile']
                     for emotion in scores:
                         value = scores[emotion]
