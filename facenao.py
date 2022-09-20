@@ -16,13 +16,16 @@ from os.path import join, dirname, abspath, exists
 import sys
 import pickle
 
+import numpy as np
+
 import utils
 
 
 bottle.BaseRequest.MEMFILE_MAX = 8 * 1024 * 1024 * 5
 
 basedir = join(dirname(__file__), 'static')
-templatedir = join(dirname(__file__), 'templates')
+#templatedir = join(dirname(__file__), 'templates')
+templatedir = 'templates'
 basepath = dirname(abspath(__file__))
 
 logformat = ('%(REMOTE_ADDR)s [%(time)s] '
@@ -41,7 +44,7 @@ def root():
     return template(join(templatedir, 'base.html'))
 
 
-@post('/save_cameraimage')
+@post('/save_cameraimage_and_detect')
 def saveimage():
     array = str(request.POST.get('rawimg', None))
     w = int(request.POST.get('width', None))
@@ -50,55 +53,39 @@ def saveimage():
     if not array or not w or not h or not imid:
         return {'status': False}
 
-    try:
-        barray = base64.b64decode(array)
-        im = Image.frombuffer("RGB", (w, h), barray, "raw", "RGB", 0, 1)
-        locpath = join('static', 'media', 'camera', imid + '.jpg')
-        fname = join(basepath, locpath)
-        im.save(fname, quality=95)
-    except:
-        return {'status': False}
-    else:
-        return {'status': locpath}
-# end
 
+    barray = base64.b64decode(array)
+    image = Image.frombuffer("RGB", (w, h), barray, "raw", "RGB", 0, 1)
+    locpath = join('static', 'media', 'camera', imid + '.jpg')
+    fname = join(basepath, locpath)
+    image.save(fname, quality=95)
 
-@post('/save_emotiondata')
-def saveemotions():
-    imid = str(request.POST.get('imid', None))
-    emodata = str(request.POST.get('emodata', None))
-    if not imid or not emodata:
-        return {'status': False, 'message': 'Invalid request data'}
-
-    try:
-        emodata = json.loads(emodata)
-    except:
-        return {'status': False, 'message': 'Invalid emotion JSON data'}
-
-    impath = join('static', 'media', 'camera', imid + '.jpg')
-    if not exists(impath):
-        return {'status': False, 'message': 'Image does not exist'}
+    emodata = utils.detect_classify(np.array(image))
 
     emotiondata = {'imageid': imid, 'faceimages': [], 'apiresult': emodata}
-    image = Image.open(impath)
-    for i, face in enumerate(emodata):
-        facedata = face['faceRectangle']
-        faceimg = image.crop((facedata['left'], facedata['top'], facedata['width']+facedata['left'], facedata['height']+facedata['top']))
+    for i, result in enumerate(emodata):
+        faceimg = Image.fromarray(result['face'])
 
         facefileid = '{}.{}.jpg'.format(imid, i)
         impath = join('static', 'media', 'faces', facefileid)
         fname = join(basepath, impath)
         faceimg.save(fname)
 
-        face['facefile'] = facefileid
-        emotiondata['faceimages'].append(facefileid)
+        result['facefile'] = impath   #facefileid
+        result['scores'] = [(str(round(score, 2)), emotion) for score, emotion in result['scores']]  # convert float to str to enable JSON serialization
+        del result['face']  # remove np array
+        #emotiondata['faceimages'].append(facefileid)
 
     emofname = join('static', 'media', 'emotiondata', imid + '.pickle')
     emofname = join(basepath, emofname)
     with open(emofname, 'wb') as ofp:
         pickle.dump(emotiondata, ofp, 0)
 
-    return {'status': True, 'faceimages': emotiondata['faceimages']}
+    #print(emodata)
+    return {'status': True,
+            'imageLocation': locpath,
+            'emotiondata': emodata}  # 'facefile'
+
 
 
 @post('/get_hof')
