@@ -127,9 +127,9 @@ function connectRobot(ipaddr) {
     }
 }
 
-
+// TODO: rename into save_and_detect or similar
 function saveCameraImage(imid, imgBase64, imgWidth, imgHeight, okcb) {
-    $.post("/save_cameraimage", {
+    $.post("/save_cameraimage_and_detect", {
             'rawimg': imgBase64,
             'width': imgWidth,
             'height': imgHeight,
@@ -137,24 +137,7 @@ function saveCameraImage(imid, imgBase64, imgWidth, imgHeight, okcb) {
         })
         .done(function(data) {
             if (!data.status) {
-                writeText('Server error while calling save_cameraimage');
-            }
-            okcb(data.status);
-        })
-        .fail(function(err) {
-            writeText('POST request failed');
-        })
-}
-
-
-function saveEmotionData(imid, emodata, okcb){
-    $.post("/save_emotiondata", {
-            'imid': imid,
-            'emodata': JSON.stringify(emodata)
-        })
-        .done(function(data) {
-            if (!data.status) {
-                writeText('Server error while calling save_emotiondata: ' + status.message);
+                writeText('Server error while calling save_cameraimage_and_detect');
             }
             okcb(data);
         })
@@ -163,6 +146,7 @@ function saveEmotionData(imid, emodata, okcb){
         })
 }
 
+
 function loadHOF() {
     $.post("/get_hof")
         .done(function(data) {
@@ -170,11 +154,12 @@ function loadHOF() {
                 writeText('Server error while calling get_hof: ' + status.message);
             }
 
-            var emotions = ['anger', 'contempt', 'disgust', 'fear', 'happiness', 'neutral', 'sadness', 'surprise'];
+//             var emotions = ['anger', 'contempt', 'disgust', 'fear', 'happiness', 'neutral', 'sadness', 'surprise'];
+            var emotions = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
             for (var i=0; i<emotions.length; i++) {
                 var em = emotions[i];
                 if (data['maxemotions'][em]['image']!=null  && data['maxemotions'][em]['image'] != $('#' + em + ' img').attr('src')) {
-                    $('#' + em + ' img').attr('src', '/static/media/faces/' + data['maxemotions'][em]['image']);
+                    $('#' + em + ' img').attr('src', data['maxemotions'][em]['image']);
                     $('#' + em + ' figcaption').text(formatScore(data['maxemotions'][em]['score']));
                 }
             }
@@ -297,6 +282,7 @@ $(document).ready(function() {
 
             var imgbasename = new Date().toISOString();
             var subscribename = "test" + Math.random().toString();
+            // jsnao.al_video.subscribeCamera(subscribename, 0, 2, 11, 30).fail(jsnao.error).done(function(sname) {
             jsnao.al_video.subscribeCamera(subscribename, 0, 2, 11, 30).fail(jsnao.error).done(function(sname) {
                 jsnao.sname = sname;
 
@@ -306,24 +292,28 @@ $(document).ready(function() {
 
                 $('#clicksound')[0].play();
                 jsnao.al_video.getImageRemote(jsnao.sname).fail(jsnao.error).done(function(data) {
-                    var imgBase64 = data[6];
+                    // var imgBase64 = data[6];
+                    imgBase64 = data[6];
+                    var imgHeight = data[1];
+                    var imgWidth = data[0];
+
                     // var imgWidth = 1280;
                     // var imgHeight = 960;
 
-                    var imgHeight = 480;
-                    var imgWidth = 640;
+                    // var imgHeight = 480;
+                    // var imgWidth = 640;
 
-                    saveCameraImage(imgbasename, imgBase64, imgWidth, imgHeight, function(imurl) {
-                        Jimp.read(imurl).then(function(image) {
+                    saveCameraImage(imgbasename, imgBase64, imgWidth, imgHeight, function(result) {
+
+                        Jimp.read(result.imageLocation).then(function(image) {
                             var displayImage = image.clone();
                             displayImage.scaleToFit(1200, 500);
 
-
-                            image.scaleToFit(640,480);
-
-                            if(image.bitmap.width > 1920 || image.bitmap.height > 1200) {
-                                image.scaleToFit(1920, 1200);
-                            }
+//                             image.scaleToFit(640,480);
+//
+//                             if(image.bitmap.width > 1920 || image.bitmap.height > 1200) {
+//                                 image.scaleToFit(1920, 1200);
+//                             }
 
                             image.getBase64(Jimp.MIME_JPEG, function(err, src) {
                                 displayImage.getBase64(Jimp.MIME_JPEG, function(err, src) {
@@ -331,83 +321,60 @@ $(document).ready(function() {
                                     $('#naosnapshot').append('<figure><img src="' + src + '"/></figure>');
                                 });
 
-                                var imgblob = b64toBlob(src);
-                                faceEmotionAPI(imgblob, function(data) {
-                                    // console.log(data);
-                                    spinner.stop();
-                                    $('#faces').empty();
-                                    saveEmotionData(imgbasename, data, function(facedata){
-                                        // console.log(facedata.faceimages);
-                                    });
 
-                                    for (var i = 0; i < data.length; i++) {
-                                        var face = data[i].faceRectangle;
-                                        var emos = data[i].faceAttributes.emotion;
-                                        var faceimg = image.clone();
-                                        faceimg.crop(face.left, face.top, face.width, face.height);
-                                        faceimg.scaleToFit(200, 200);
+//                                 console.log(result);
+                                spinner.stop();
+                                $('#faces').empty();
 
-                                        // sort descending
-                                        var sortedEmos = new Array;
-                                        for (var sc in emos) {
-                                            if (emos.hasOwnProperty(sc)) {
-                                                sortedEmos.push([sc, emos[sc]]);
-                                            }
+
+                                var caption = '';
+
+                                for (let i=0; i<result.emotiondata.length; i++) {  // for each face
+                                    for (let j=0; j<result.emotiondata[i].scores.length; j++) {  // for each emotion
+                                        let val = parseFloat(result.emotiondata[i].scores[j][0])*100;
+                                        let emo = result.emotiondata[i].scores[j][1];
+
+                                        if (val==0)
+                                            break;
+                                        if (j==0) {
+                                            caption += '<strong>' + emo + ': ' + val.toFixed(0) + '%' + '</strong>' + '</br>'
                                         }
-                                        sortedEmos.sort(function(a, b) {
-                                            return b[1] - a[1];
-                                        })
-
-
-                                        var caption = '<strong>'+  data[i].faceAttributes.gender + ', ' + Math.round(data[i].faceAttributes.age) + ' years' + '</strong></br>';
-                                        // var caption = '';
-                                        for (var j=0; j<sortedEmos.length; j++) {
-                                            var val = Math.round(sortedEmos[j][1] * 1000) / 10;
-                                            if (val > 0) {
-                                                if (j==0) {
-                                                    caption += '<strong>' + sortedEmos[j][0] + ': ' + val.toString() + '%' + '</strong>' + '</br>'
-                                                }
-                                                else {
-                                                    caption += sortedEmos[j][0] + ': ' + val.toString() + '%' + '</br>'
-                                                }
-                                            }
+                                        else {
+                                            caption += emo + ': ' + val.toFixed(0) + '%' + '</br>'
                                         }
+                                    }
 
-                                        // console.log(caption);
+                                    Jimp.read(result.emotiondata[i].facefile).then(function(faceimg) {
                                         faceimg.getBase64(Jimp.MIME_JPEG, function(err, src) {
                                             $('#faces').append('<figure><img src="' + src + '"/><figcaption>' + caption + '</figcaption></figure>');
                                         });
-                                    }
 
-                                    if (data.length > 0) {
-                                        var naotext = 'I see ';
-                                        if (data.length == 1) {
-                                            naotext += 'one person.'
-                                        }
-                                        else if (data.length > 1) {
-                                            naotext += data.length + ' persons.'
-                                        }
-                                        jsnao.al_tts.say(naotext);
-                                    }
-                                    else{
-                                        jsnao.al_tts.say("Sorry, I don't see any face clearly enough!");
-                                    }
+                                    });
+                                }
 
-                                    $('button').removeAttr("disabled");
-                                    loadHOF();
+                                let nfaces = result.emotiondata.length;
+//                                 if (nfaces > 0) {
+//                                     var naotext = 'I see ';
+//                                     if (nfaces == 1) {
+//                                         naotext += 'one person.'
+//                                     }
+//                                     else if (nfaces > 1) {
+//                                         naotext += nfaces + ' persons.'
+//                                     }
+//                                     jsnao.al_tts.say(naotext);
+//                                 }
+//                                 else{
+//                                     jsnao.al_tts.say("Sorry, I don't see any face clearly enough!");
+//                                 }
 
-                                }, function(err) {
-                                    spinner.stop();
-                                    $('button').removeAttr("disabled");
-                                    writeText('Error while calling face emotion service: ' + err);
-                                    console.log(err);
-                                })
-                            });
-                            // console.log(results);
+                                spinner.stop();
+                                $('button').removeAttr("disabled");
+                                loadHOF();
 
-                        }).catch(function(err) {
-                            writeText('Error while reading image ' + imurl);
-                        });
+                            })
+
+
+                        })
                     });
 
                 });
@@ -417,40 +384,4 @@ $(document).ready(function() {
         }
     })
 
-    function faceEmotionAPI(imgblob, okcallback, errcallback) {
-        var params = {
-                   "returnFaceId": "true",
-                   "returnFaceLandmarks": "false",
-                   "returnFaceAttributes": "age,gender,emotion"
-               };
-        $.ajax({
-                //  var params = {};
-                // NOTE: You must use the same location in your REST call as you used to obtain your subscription keys.
-                //   For example, if you obtained your subscription keys from westcentralus, replace "westus" in the
-                //   URL below with "westcentralus".
-                //  url: "https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize?" + $.param(params),
-
-                // url: "https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize?",  THIS IS OLD EMOTION API
-                url: "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect" + "?" + $.param(params),
-
-                beforeSend: function(xhrObj) {
-                    // Request headers
-                    //  xhrObj.setRequestHeader("Content-Type","application/json");
-                    xhrObj.setRequestHeader("Content-Type", "application/octet-stream");
-
-                    // NOTE: Replace the "Ocp-Apim-Subscription-Key" value with a valid subscription key.
-                    xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", key_1);
-                },
-                processData: false,
-                type: "POST",
-                // Request body
-                data: imgblob,
-            })
-            .done(function(data) {
-                typeof okcallback === 'function' && okcallback(data);
-            })
-            .fail(function(error) {
-                typeof errcallback === 'function' && errcallback(error);
-            });
-    }
 })

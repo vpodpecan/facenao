@@ -21,7 +21,12 @@
 
     <!-- <script src="https://cdn.rawgit.com/oliver-moran/jimp/master/browser/lib/jimp.min.js"></script> -->
 
-    <script src="../static/js/jimp.min.js"></script>
+    <!-- <script src="../static/js/jimp.min.js"></script> -->
+
+    <script src="https://unpkg.com/jimp@0.16.1/browser/lib/jimp.js"></script>
+
+
+    <!-- <script src="../static/js/jimp.latest.js"></script> -->
     <!-- <script src="../static/js/kairos.js"></script> -->
 
     <script src="../static/js/spin.min.js"></script>
@@ -38,9 +43,6 @@
     <script src="../static/js/main.js"></script>
 
     <script type="text/javascript">
-
-        // Emotion API keys
-        % include('templates/api-keys.js')
 
     </script>
 
@@ -105,10 +107,11 @@
 
         <div class="row" id="hof">
 
-            <div class="col-md-2" id="anger">
+            <div class="col-md-2">
             </div>
 
-            <div class="col-md-1 centertext" id="anger">
+
+            <div class="col-md-1 centertext" id="angry">
                 <div class="imgtitle">Anger</div>
                 <figure>
                     <img src="">
@@ -116,14 +119,6 @@
                 </figure>
             </div>
 
-
-            <div class="col-md-1 centertext" id="contempt">
-                <div class="imgtitle">Contempt</div>
-                <figure>
-                    <img src="">
-                    <figcaption></figcaption>
-                </figure>
-            </div>
 
             <div class="col-md-1 centertext" id="disgust">
                 <div class="imgtitle">Disgust</div>
@@ -141,7 +136,7 @@
                 </figure>
             </div>
 
-            <div class="col-md-1 centertext" id="happiness">
+            <div class="col-md-1 centertext" id="happy">
                 <div class="imgtitle">Happiness</div>
                 <figure>
                     <img src="">
@@ -157,7 +152,7 @@
                 </figure>
             </div>
 
-            <div class="col-md-1 centertext" id="sadness">
+            <div class="col-md-1 centertext" id="sad">
                 <div class="imgtitle">Sadness</div>
                 <figure>
                     <img src="">
