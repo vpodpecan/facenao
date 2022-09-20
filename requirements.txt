@@ -1,5 +1,6 @@
-bottle==0.12.13
-paste==2.0.3
-Pillow==4.2.1
-scandir==1.5
-imageio==2.2.0
+bottle==0.12.23
+Pillow==9.2.0
+Paste==3.5.2
+imageio==2.21.3
+tensorflow==2.9.2
+pypaz==0.1.10
